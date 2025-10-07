@@ -1,7 +1,7 @@
 import torch
 import requests
-from tokenizer import train_bpe_tokenizer, load_bpe_tokenizer, encode_text
-from config import (
+from nanogpt.tokenizer import train_bpe_tokenizer, load_bpe_tokenizer, encode_text
+from nanogpt.config import (
     data_url,
     data_file,
     tokenizer_vocab_size,

@@ -62,8 +62,8 @@ def load_checkpoint(filepath, device="cuda"):
     Returns:
         model, config, checkpoint_dict
     """
-    from config_manager import ExperimentConfig
-    from model import GPTLanguageModel
+    from nanogpt.config_manager import ExperimentConfig
+    from nanogpt.model import GPTLanguageModel
 
     checkpoint = torch.load(filepath, map_location=device)
 
@@ -76,7 +76,7 @@ def load_checkpoint(filepath, device="cuda"):
     else:
         # Backward compatibility: use legacy config for old checkpoints
         print("⚠️  Old checkpoint format detected, using legacy config")
-        from config_manager import get_legacy_config
+        from nanogpt.config_manager import get_legacy_config
 
         config = get_legacy_config()
 
@@ -107,7 +107,7 @@ def load_checkpoint_for_training(filepath, model, optimizer, device="cuda"):
     Returns:
         config, start_iteration
     """
-    from config_manager import ExperimentConfig
+    from nanogpt.config_manager import ExperimentConfig
 
     checkpoint = torch.load(filepath, map_location=device)
 
@@ -122,7 +122,7 @@ def load_checkpoint_for_training(filepath, model, optimizer, device="cuda"):
     if "config" in checkpoint:
         config = ExperimentConfig.from_dict(checkpoint["config"])
     else:
-        from config_manager import get_legacy_config
+        from nanogpt.config_manager import get_legacy_config
 
         config = get_legacy_config()
 

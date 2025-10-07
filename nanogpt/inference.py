@@ -1,7 +1,7 @@
 import torch
 import argparse
-from checkpoint import load_checkpoint
-from tokenizer import load_bpe_tokenizer, encode_text, decode_tokens
+from nanogpt.checkpoint import load_checkpoint
+from nanogpt.tokenizer import load_bpe_tokenizer, encode_text, decode_tokens
 
 
 def generate_text(

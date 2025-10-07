@@ -4,10 +4,10 @@ import glob
 import os
 from tqdm.auto import tqdm
 import wandb
-from model import GPTLanguageModel
-from data import prepare_data, get_batch
-from checkpoint import save_checkpoint
-from config_manager import ExperimentConfig, ModelConfig, TrainingConfig, DataConfig
+from nanogpt.model import GPTLanguageModel
+from nanogpt.data import prepare_data, get_batch
+from nanogpt.checkpoint import save_checkpoint
+from nanogpt.config_manager import ExperimentConfig, ModelConfig, TrainingConfig, DataConfig
 
 
 @torch.no_grad()
@@ -68,7 +68,7 @@ def train(config: ExperimentConfig, resume=False):
         if checkpoint_path:
             print(f"Resuming from checkpoint: {checkpoint_path}")
             # Load model first
-            from checkpoint import load_checkpoint_for_training
+            from nanogpt.checkpoint import load_checkpoint_for_training
 
             model = GPTLanguageModel(vocab_size)
             model.to(config.device)

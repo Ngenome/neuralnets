@@ -1,0 +1,37 @@
+Preparing data...
+Downloading data from https://raw.githubusercontent.com/karpathy/char-rnn/master/data/tinyshakespeare/input.txt...
+✅ Download complete! File saved as input.txt
+Training new BPE tokenizer...
+✅ Trained and saved BPE tokenizer at bpe_tokenizer.json
+✅ Dataset loaded: 463981 tokens
+   Train: 417582 tokens
+   Val: 46399 tokens
+Initializing model with vocab_size=1000...
+Model parameters: 0.87M
+
+Starting training on cuda...
+100%|████████████████████████████████████████| 5000/5000 [04:12<00:00, 19.79it/s]
+step 0: train loss 7.0939, val loss 7.1029
+step 500: train loss 4.3856, val loss 4.4956
+✅ Saved checkpoint: model_20251007_163943.pth
+step 1000: train loss 3.9155, val loss 4.0691
+✅ Saved checkpoint: model_20251007_164009.pth
+step 1500: train loss 3.7236, val loss 3.9388
+✅ Saved checkpoint: model_20251007_164034.pth
+step 2000: train loss 3.6109, val loss 3.8615
+✅ Saved checkpoint: model_20251007_164059.pth
+step 2500: train loss 3.5116, val loss 3.8074
+✅ Saved checkpoint: model_20251007_164125.pth
+step 3000: train loss 3.4427, val loss 3.7454
+✅ Saved checkpoint: model_20251007_164149.pth
+step 3500: train loss 3.3665, val loss 3.7188
+✅ Saved checkpoint: model_20251007_164213.pth
+step 4000: train loss 3.3017, val loss 3.6791
+✅ Saved checkpoint: model_20251007_164238.pth
+step 4500: train loss 3.2499, val loss 3.6523
+✅ Saved checkpoint: model_20251007_164302.pth
+step 4999: train loss 3.2023, val loss 3.6153
+✅ Saved checkpoint: model_20251007_164326.pth
+
+Training complete!
+✅ Saved checkpoint: model_20251007_164326.pth

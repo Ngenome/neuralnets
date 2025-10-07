@@ -1,0 +1,81 @@
+
+Starting training on cuda from iteration 0...
+ 21%|███████▋                             | 4123/20000 [34:17<2:12:02,  2.00it/s]
+step 0: train loss 7.1412, val loss 7.1415
+step 500: train loss 3.3877, val loss 3.7478
+✅ Saved checkpoint: checkpoints/model_20251007_170435.pth
+step 1000: train loss 2.6608, val loss 3.4535
+✅ Saved checkpoint: checkpoints/model_20251007_170840.pth
+step 1500: train loss 1.9385, val loss 3.6233
+✅ Saved checkpoint: checkpoints/model_20251007_171244.pth
+step 2000: train loss 1.1671, val loss 4.1031
+✅ Saved checkpoint: checkpoints/model_20251007_171649.pth
+step 2500: train loss 0.6133, val loss 4.6984
+✅ Saved checkpoint: checkpoints/model_20251007_172053.pth
+step 3000: train loss 0.3450, val loss 5.2680
+✅ Saved checkpoint: checkpoints/model_20251007_172500.pth
+step 3500: train loss 0.2333, val loss 5.7480
+✅ Saved checkpoint: checkpoints/model_20251007_172905.pth
+step 4000: train loss 0.1714, val loss 6.1263
+✅ Saved checkpoint: checkpoints/model_20251007_173309.pth
+Traceback (most recent call last):
+  File "/home/ubuntu/code/nanogpt/train.py", line 156, in <module>
+    )
+  File "/home/ubuntu/code/nanogpt/train.py", line 135, in train
+    logits, loss = model(xb, yb)
+                   ^^^^^^^^^^^^^
+  File "/home/ubuntu/code/nanogpt/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/code/nanogpt/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1784, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/code/nanogpt/model.py", line 91, in forward
+    x = self.blocks(x)
+        ^^^^^^^^^^^^^^
+  File "/home/ubuntu/code/nanogpt/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/code/nanogpt/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1784, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/code/nanogpt/.venv/lib/python3.12/site-packages/torch/nn/modules/container.py", line 244, in forward
+    input = module(input)
+            ^^^^^^^^^^^^^
+  File "/home/ubuntu/code/nanogpt/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/code/nanogpt/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1784, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/code/nanogpt/model.py", line 70, in forward
+    x = x + self.sa(self.ln1(x))
+            ^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/code/nanogpt/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/code/nanogpt/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1784, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/code/nanogpt/model.py", line 37, in forward
+    out = torch.cat([h(x) for h in self.heads], dim=-1)
+                     ^^^^
+  File "/home/ubuntu/code/nanogpt/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/code/nanogpt/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1784, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/code/nanogpt/model.py", line 19, in forward
+    k = self.key(x)
+        ^^^^^^^^^^^
+  File "/home/ubuntu/code/nanogpt/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/code/nanogpt/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1784, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/code/nanogpt/.venv/lib/python3.12/site-packages/torch/nn/modules/linear.py", line 124, in forward
+    def forward(self, input: Tensor) -> Tensor:
+
+KeyboardInterrupt

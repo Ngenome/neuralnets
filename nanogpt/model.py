@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from config import n_embd, n_head, n_layer, dropout, block_size, device
+from nanogpt.config import n_embd, n_head, n_layer, dropout, block_size, device
 
 
 class Head(nn.Module):

@@ -1,0 +1,39 @@
+{
+  "os":  "Linux-6.14.0-1013-aws-x86_64-with-glibc2.39",
+  "python":  "CPython 3.12.10",
+  "startedAt":  "2025-10-07T16:46:44.174694Z",
+  "args":  [
+    "--resume"
+  ],
+  "program":  "/home/ubuntu/code/nanogpt/train.py",
+  "codePath":  "train.py",
+  "codePathLocal":  "train.py",
+  "email":  "interstellarcg@gmail.com",
+  "root":  "/home/ubuntu/code/nanogpt",
+  "host":  "ip-172-31-24-20",
+  "executable":  "/home/ubuntu/code/nanogpt/.venv/bin/python3",
+  "cpu_count":  4,
+  "cpu_count_logical":  8,
+  "gpu":  "NVIDIA A10G",
+  "gpu_count":  1,
+  "disk":  {
+    "/":  {
+      "total":  "154894188544",
+      "used":  "38013800448"
+    }
+  },
+  "memory":  {
+    "total":  "33263820800"
+  },
+  "gpu_nvidia":  [
+    {
+      "name":  "NVIDIA A10G",
+      "memoryTotal":  "24146608128",
+      "cudaCores":  10240,
+      "architecture":  "Ampere",
+      "uuid":  "GPU-d476cfac-a3ec-75f1-a526-66a0bdee4276"
+    }
+  ],
+  "cudaVersion":  "12.8",
+  "writerId":  "edl5xfi334a54hk9ltf9skt2xjm9bqk6"
+}

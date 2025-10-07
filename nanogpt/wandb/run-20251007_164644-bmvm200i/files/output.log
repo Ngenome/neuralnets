@@ -1,0 +1,18 @@
+
+Starting training on cuda from iteration 2500...
+100%|████████████████████████████████████████| 2500/2500 [05:21<00:00,  7.77it/s]
+step 2500: train loss 3.5129, val loss 3.8116
+✅ Saved checkpoint: model_20251007_164659.pth
+step 3000: train loss 3.3888, val loss 3.7175
+✅ Saved checkpoint: model_20251007_164801.pth
+step 3500: train loss 3.2863, val loss 3.6576
+✅ Saved checkpoint: model_20251007_164903.pth
+step 4000: train loss 3.1836, val loss 3.5977
+✅ Saved checkpoint: model_20251007_165004.pth
+step 4500: train loss 3.0932, val loss 3.5575
+✅ Saved checkpoint: model_20251007_165105.pth
+step 4999: train loss 3.0168, val loss 3.5266
+✅ Saved checkpoint: model_20251007_165206.pth
+
+Training complete!
+✅ Saved checkpoint: model_20251007_165206.pth
