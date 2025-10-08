@@ -33,6 +33,7 @@ class TrainingConfig:
 class DataConfig:
     """Data configuration"""
 
+    dataset: str = "shakespeare"  # "shakespeare" or "openwebtext"
     data_url: str = "https://raw.githubusercontent.com/karpathy/char-rnn/master/data/tinyshakespeare/input.txt"
     data_file: str = "input.txt"
     tokenizer_vocab_size: int = 1000

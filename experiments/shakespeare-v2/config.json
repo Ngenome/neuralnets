@@ -1,0 +1,27 @@
+{
+  "experiment_name": "shakespeare-v2",
+  "seed": 1337,
+  "device": "cuda",
+  "model": {
+    "n_embd": 256,
+    "n_head": 4,
+    "n_layer": 4,
+    "dropout": 0.2,
+    "vocab_size": 1000
+  },
+  "training": {
+    "batch_size": 16,
+    "block_size": 128,
+    "max_iters": 5000,
+    "eval_interval": 100,
+    "learning_rate": 3e-4,
+    "eval_iters": 200
+  },
+  "data": {
+    "dataset": "shakespeare",
+    "data_url": "https://raw.githubusercontent.com/karpathy/char-rnn/master/data/tinyshakespeare/input.txt",
+    "data_file": "input.txt",
+    "tokenizer_vocab_size": 1000,
+    "tokenizer_path": "bpe_tokenizer.json"
+  }
+}

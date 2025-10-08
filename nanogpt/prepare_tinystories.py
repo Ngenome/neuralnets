@@ -1,7 +1,7 @@
 """
-Prepare OpenWebText dataset for training.
-Based on Karpathy's nanoGPT approach.
-Downloads ~54GB from HuggingFace and tokenizes with GPT-2 tokenizer.
+Prepare TinyStories dataset for training.
+TinyStories is a dataset of synthetic short stories for children, created by Microsoft Research.
+Much smaller than OpenWebText (~300-500M tokens vs 1.78B).
 """
 import os
 from tqdm import tqdm
@@ -10,7 +10,7 @@ import tiktoken
 from datasets import load_dataset
 
 # Paths
-DATA_DIR = "nanogpt/data/openwebtext"
+DATA_DIR = "nanogpt/data/tinystories"
 TRAIN_FILE = os.path.join(DATA_DIR, "train.bin")
 VAL_FILE = os.path.join(DATA_DIR, "val.bin")
 
@@ -22,29 +22,29 @@ enc = tiktoken.get_encoding("gpt2")
 
 
 def main():
-    """Download and prepare OpenWebText"""
+    """Download and prepare TinyStories"""
     print("=" * 80)
-    print("OpenWebText Preparation")
+    print("TinyStories Preparation")
     print("=" * 80)
     print("This will:")
-    print("  1. Download ~54GB from HuggingFace (cached)")
-    print("  2. Tokenize ~8M documents with GPT-2 tokenizer")
+    print("  1. Download TinyStories from HuggingFace (~500MB)")
+    print("  2. Tokenize ~2.1M stories with GPT-2 tokenizer")
     print("  3. Save as .bin files for fast loading")
     print("=" * 80)
 
     os.makedirs(DATA_DIR, exist_ok=True)
 
-    # Download dataset (Parquet format, ~10GB, about 1.6M documents - 20% of full)
-    print("\nDownloading OpenWebText from HuggingFace...")
-    print("Using Bingsu/openwebtext_20p (20% subset in Parquet format)")
-    dataset = load_dataset("Bingsu/openwebtext_20p", num_proc=num_proc)
+    # Download dataset
+    print("\nDownloading TinyStories from HuggingFace...")
+    print("Using roneneldan/TinyStories dataset")
+    dataset = load_dataset("roneneldan/TinyStories", num_proc=num_proc)
 
-    # Create train and validation splits
-    print("Creating train/val splits...")
-    split_dataset = dataset["train"].train_test_split(
-        test_size=0.0005, seed=2357, shuffle=True
-    )
-    split_dataset['val'] = split_dataset.pop('test')
+    # Use existing train/validation splits
+    print("Using existing train/validation splits...")
+    split_dataset = {
+        'train': dataset['train'],
+        'val': dataset['validation']
+    }
 
     # Tokenize the dataset
     def process(example):
@@ -54,12 +54,15 @@ def main():
         return out
 
     print("Tokenizing dataset...")
-    tokenized = split_dataset.map(
-        process,
-        remove_columns=['text'],
-        desc="tokenizing the splits",
-        num_proc=num_proc,
-    )
+    tokenized = {}
+    for split_name, dset in split_dataset.items():
+        print(f"\nTokenizing {split_name} split...")
+        tokenized[split_name] = dset.map(
+            process,
+            remove_columns=['text'],
+            desc=f"tokenizing {split_name}",
+            num_proc=num_proc,
+        )
 
     # Concatenate all the ids in each dataset into one large file
     for split, dset in tokenized.items():
@@ -88,13 +91,13 @@ def main():
         print(f"✅ Saved {filename}: {arr_len:,} tokens")
 
     print("\n" + "=" * 80)
-    print("✅ OpenWebText preparation complete!")
+    print("✅ TinyStories preparation complete!")
     print("=" * 80)
     print(f"Train: {TRAIN_FILE}")
     print(f"Val: {VAL_FILE}")
     print(f"Vocab size: {enc.n_vocab} (GPT-2)")
     print("\nTo train:")
-    print("  uv run python -m nanogpt.train --name openwebtext-v1 --dataset openwebtext")
+    print("  uv run python -m nanogpt.train --name tinystories-v1")
 
 
 if __name__ == '__main__':

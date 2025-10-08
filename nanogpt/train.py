@@ -43,6 +43,39 @@ def get_latest_checkpoint(experiment_name):
     )
 
 
+def cleanup_old_checkpoints(experiment_name, keep_last=5):
+    """Remove old checkpoints, keeping only the most recent ones"""
+    exp_dir = os.path.join("experiments", experiment_name)
+    if not os.path.exists(exp_dir):
+        return
+
+    # Get all checkpoint files
+    checkpoints = glob.glob(os.path.join(exp_dir, "checkpoint_*.pth"))
+    configs = glob.glob(os.path.join(exp_dir, "config_*.json"))
+
+    if len(checkpoints) <= keep_last:
+        return
+
+    # Sort by timestamp (oldest first)
+    checkpoints.sort(key=lambda x: os.path.basename(x))
+    configs.sort(key=lambda x: os.path.basename(x))
+
+    # Remove oldest checkpoints
+    for checkpoint in checkpoints[:-keep_last]:
+        try:
+            os.remove(checkpoint)
+            print(f"Removed old checkpoint: {os.path.basename(checkpoint)}")
+        except Exception as e:
+            print(f"Failed to remove {checkpoint}: {e}")
+
+    # Remove corresponding config files
+    for config_file in configs[:-keep_last]:
+        try:
+            os.remove(config_file)
+        except Exception:
+            pass
+
+
 def train(config: ExperimentConfig, resume=False):
     """
     Train the model with given configuration.
@@ -54,9 +87,14 @@ def train(config: ExperimentConfig, resume=False):
     # Set random seed
     torch.manual_seed(config.seed)
 
+    # Enable mixed precision training for memory efficiency
+    use_amp = config.device == "cuda"
+    scaler = torch.cuda.amp.GradScaler(enabled=use_amp)
+
     # Prepare data
     print("Preparing data...")
-    train_data, val_data, tokenizer, vocab_size = prepare_data()
+    dataset = getattr(config.data, 'dataset', 'shakespeare')
+    train_data, val_data, tokenizer, vocab_size = prepare_data(dataset=dataset)
 
     # Update vocab size in config
     config.model.vocab_size = vocab_size
@@ -78,11 +116,13 @@ def train(config: ExperimentConfig, resume=False):
             loaded_config, start_iter = load_checkpoint_for_training(
                 checkpoint_path, model, optimizer, config.device
             )
-            # Use loaded config but allow overriding experiment name
+            # Keep new training settings (max_iters, eval_interval) from config.json
+            # but preserve model architecture from checkpoint
+            new_max_iters = config.training.max_iters
+            new_eval_interval = config.training.eval_interval
             config = loaded_config
-            config.experiment_name = (
-                config.experiment_name
-            )  # Keep the requested experiment name
+            config.training.max_iters = new_max_iters
+            config.training.eval_interval = new_eval_interval
             print(f"Resuming from iteration {start_iter}")
         else:
             print(
@@ -116,6 +156,7 @@ def train(config: ExperimentConfig, resume=False):
 
     # Training loop
     print(f"\nStarting training on {config.device} from iteration {start_iter}...")
+    print(f"DEBUG: start_iter={start_iter}, max_iters={config.training.max_iters}, range size={config.training.max_iters - start_iter}")
     for iter in tqdm(range(start_iter, config.training.max_iters)):
         # Evaluate loss periodically
         if (
@@ -146,16 +187,27 @@ def train(config: ExperimentConfig, resume=False):
                     loss=losses["val"],
                     experiment_name=config.experiment_name,
                 )
+                # Clean up old checkpoints, keep only last 5
+                cleanup_old_checkpoints(config.experiment_name, keep_last=5)
 
-        # Training step
+        # Training step with automatic mixed precision
         xb, yb = get_batch("train", train_data, val_data)
-        logits, loss = model(xb, yb)
+
+        with torch.cuda.amp.autocast(enabled=use_amp):
+            logits, loss = model(xb, yb)
+
         optimizer.zero_grad(set_to_none=True)
-        loss.backward()
-        optimizer.step()
+        scaler.scale(loss).backward()
+        scaler.step(optimizer)
+        scaler.update()
 
     # Final checkpoint
     print("\nTraining complete!")
+
+    # Get final loss if not already computed
+    if 'losses' not in locals():
+        losses = estimate_loss(model, train_data, val_data, config)
+
     save_checkpoint(
         model,
         config,
@@ -196,22 +248,29 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    # Build config from arguments
-    config = ExperimentConfig(
-        model=ModelConfig(
-            n_embd=args.n_embd,
-            n_head=args.n_head,
-            n_layer=args.n_layer,
-            dropout=args.dropout,
-        ),
-        training=TrainingConfig(
-            batch_size=args.batch_size,
-            block_size=args.block_size,
-            max_iters=args.max_iters,
-            learning_rate=args.learning_rate,
-        ),
-        data=DataConfig(),
-        experiment_name=args.name,
-    )
+    # Try to load config from file first, otherwise build from arguments
+    config_path = os.path.join("experiments", args.name, "config.json")
+    if os.path.exists(config_path):
+        print(f"Loading config from {config_path}")
+        config = ExperimentConfig.load_json(config_path)
+    else:
+        print(f"No config found at {config_path}, building from arguments")
+        # Build config from arguments
+        config = ExperimentConfig(
+            model=ModelConfig(
+                n_embd=args.n_embd,
+                n_head=args.n_head,
+                n_layer=args.n_layer,
+                dropout=args.dropout,
+            ),
+            training=TrainingConfig(
+                batch_size=args.batch_size,
+                block_size=args.block_size,
+                max_iters=args.max_iters,
+                learning_rate=args.learning_rate,
+            ),
+            data=DataConfig(),
+            experiment_name=args.name,
+        )
 
     train(config, resume=args.resume)

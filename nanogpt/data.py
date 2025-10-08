@@ -1,5 +1,6 @@
 import torch
 import requests
+import numpy as np
 from nanogpt.tokenizer import train_bpe_tokenizer, load_bpe_tokenizer, encode_text
 from nanogpt.config import (
     data_url,
@@ -68,15 +69,75 @@ def get_batch(split, train_data, val_data):
     """Generate a batch of data"""
     data = train_data if split == "train" else val_data
     ix = torch.randint(len(data) - block_size, (batch_size,))
-    x = torch.stack([data[i : i + block_size] for i in ix])
-    y = torch.stack([data[i + 1 : i + block_size + 1] for i in ix])
+
+    # Handle both torch tensors and numpy memmaps
+    if isinstance(data, np.memmap):
+        x = torch.stack([torch.from_numpy(data[i : i + block_size].astype(np.int64)) for i in ix])
+        y = torch.stack([torch.from_numpy(data[i + 1 : i + block_size + 1].astype(np.int64)) for i in ix])
+    else:
+        x = torch.stack([data[i : i + block_size] for i in ix])
+        y = torch.stack([data[i + 1 : i + block_size + 1] for i in ix])
+
     return x.to(device), y.to(device)
 
 
-def prepare_data():
+def load_openwebtext():
+    """Load pre-tokenized OpenWebText dataset"""
+    data_dir = "nanogpt/data/openwebtext"
+    train_file = os.path.join(data_dir, "train.bin")
+    val_file = os.path.join(data_dir, "val.bin")
+
+    if not os.path.exists(train_file) or not os.path.exists(val_file):
+        raise FileNotFoundError(
+            f"OpenWebText data not found. Run: uv run python -m nanogpt.prepare_openwebtext"
+        )
+
+    print(f"Loading OpenWebText dataset...")
+    # Keep as memmap to avoid loading entire dataset into RAM
+    train_data = np.memmap(train_file, dtype=np.uint16, mode='r')
+    val_data = np.memmap(val_file, dtype=np.uint16, mode='r')
+
+    print(f"✅ OpenWebText loaded: {len(train_data):,} train tokens, {len(val_data):,} val tokens")
+
+    # GPT-2 tokenizer vocab size
+    vocab_size = 50257
+
+    return train_data, val_data, None, vocab_size
+
+
+def load_tinystories():
+    """Load pre-tokenized TinyStories dataset"""
+    data_dir = "nanogpt/data/tinystories"
+    train_file = os.path.join(data_dir, "train.bin")
+    val_file = os.path.join(data_dir, "val.bin")
+
+    if not os.path.exists(train_file) or not os.path.exists(val_file):
+        raise FileNotFoundError(
+            f"TinyStories data not found. Run: uv run python -m nanogpt.prepare_tinystories"
+        )
+
+    print(f"Loading TinyStories dataset...")
+    # Keep as memmap to avoid loading entire dataset into RAM
+    train_data = np.memmap(train_file, dtype=np.uint16, mode='r')
+    val_data = np.memmap(val_file, dtype=np.uint16, mode='r')
+
+    print(f"✅ TinyStories loaded: {len(train_data):,} train tokens, {len(val_data):,} val tokens")
+
+    # GPT-2 tokenizer vocab size
+    vocab_size = 50257
+
+    return train_data, val_data, None, vocab_size
+
+
+def prepare_data(dataset="shakespeare"):
     """Main function to prepare all data"""
-    download_data()
-    tokenizer = prepare_tokenizer()
-    train_data, val_data = load_data(tokenizer)
-    vocab_size = tokenizer.get_vocab_size()
-    return train_data, val_data, tokenizer, vocab_size
+    if dataset == "openwebtext":
+        return load_openwebtext()
+    elif dataset == "tinystories":
+        return load_tinystories()
+    else:
+        download_data()
+        tokenizer = prepare_tokenizer()
+        train_data, val_data = load_data(tokenizer)
+        vocab_size = tokenizer.get_vocab_size()
+        return train_data, val_data, tokenizer, vocab_size
