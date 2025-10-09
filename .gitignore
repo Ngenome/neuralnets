@@ -5,7 +5,7 @@ experiments/**/config_*.json
 # Dataset files - too large for git
 nanogpt/data/**/*.bin
 *.bin
-
+edu_fineweb10B
 # Downloaded data
 input.txt
 
@@ -37,3 +37,4 @@ wandb/
 # OS
 .DS_Store
 Thumbs.db
+nanogpt/checkpoints/
