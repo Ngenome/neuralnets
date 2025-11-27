@@ -38,3 +38,9 @@ wandb/
 .DS_Store
 Thumbs.db
 nanogpt/checkpoints/
+
+# Checkpoint files
+*.pt
+checkpoint_*.pt
+emergency_checkpoint_*.pt
+log/

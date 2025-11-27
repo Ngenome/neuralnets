@@ -620,6 +620,7 @@ version = "0.1.0"
 source = { editable = "." }
 dependencies = [
     { name = "datasets" },
+    { name = "pyrasite" },
     { name = "requests" },
     { name = "tiktoken" },
     { name = "tokenizers" },
@@ -632,6 +633,7 @@ dependencies = [
 [package.metadata]
 requires-dist = [
     { name = "datasets", specifier = ">=2.14.0" },
+    { name = "pyrasite", specifier = ">=2.0" },
     { name = "requests", specifier = ">=2.31.0" },
     { name = "tiktoken", specifier = ">=0.5.0" },
     { name = "tokenizers", specifier = ">=0.15.0" },
@@ -1111,6 +1113,12 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/ff/9c/5111c6b128861cb792a4c082677e90dac4f2e090bb2e2fe06aa5b2d39027/pydantic_core-2.41.1-graalpy312-graalpy250_312_native-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:eec83fc6abef04c7f9bec616e2d76ee9a6a4ae2a359b10c21d0f680e24a247ca", size = 1959394, upload-time = "2025-10-07T10:50:06.335Z" },
     { url = "https://files.pythonhosted.org/packages/14/3f/cfec8b9a0c48ce5d64409ec5e1903cb0b7363da38f14b41de2fcb3712700/pydantic_core-2.41.1-graalpy312-graalpy250_312_native-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:6771a2d9f83c4038dfad5970a3eef215940682b2175e32bcc817bdc639019b28", size = 2147365, upload-time = "2025-10-07T10:50:07.978Z" },
 ]
+
+[[package]]
+name = "pyrasite"
+version = "2.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/8e/d0/507f2bd9a6f9e9b475e0f62f04eeda72eeb920a79f2cc28a6a8c402e4550/pyrasite-2.0.tar.gz", hash = "sha256:e5f7a36a04379d00a46688c60a8e9bbba7c807526a9252a60cbed8de701f6ccf", size = 32074, upload-time = "2012-05-09T19:11:33.354Z" }
 
 [[package]]
 name = "python-dateutil"
